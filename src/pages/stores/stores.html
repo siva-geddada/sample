@@ -1,0 +1,65 @@
+<ion-header>
+	<ion-navbar color="secondary">
+		<ion-row>
+			<ion-col col-2>
+				<button class="header-menu" ion-button menuToggle>
+					<ion-icon class="menu-icon" name="menu"></ion-icon>
+				</button>
+			</ion-col>
+			<ion-col col-8>
+				<ion-searchbar placeholder="Αναζήτηση" (ionInput)="searchStores($event)"></ion-searchbar>
+			</ion-col>
+			<ion-col col-2 text-right>
+				<button ion-button (click)="openFilters()" color="secondary">
+					<ion-icon name="options"></ion-icon>
+				</button>
+			</ion-col>
+		</ion-row>
+	</ion-navbar>
+</ion-header>
+
+<ion-content class="background-pattern">
+	<ion-refresher (ionRefresh)="doRefresh($event)"></ion-refresher>
+
+	<ion-list *ngIf="stores" >
+		<ion-item class="pointer" *ngFor="let store of stores" (click)="navigateToStorePage(store)">
+			<ion-thumbnail item-start>
+				<img src="{{store.logo|imageStore}}" class="img-responsive store-logo">
+			</ion-thumbnail>
+			<h2>{{store.name}}</h2>
+			<div *ngIf="store.isOpen">
+				<span ion-text color="success">
+					<span *ngIf="store.isHubConnected;else onlyPhone">Ανοιχτό</span>
+				</span>
+			</div>
+			<ng-template #onlyPhone>
+				<span ion-text color="cyan">Δές τα τηλέφωνα</span>
+			</ng-template>
+			<p>{{store.getCuisines()}}</p>
+		</ion-item>
+
+	</ion-list>
+
+	<ion-list *ngIf="!stores">
+		<ion-item class="pointer" *ngFor="let number of [0,1,2]">
+			<ion-thumbnail item-start>
+				<img class="img-responsive store-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="background-color: #bdbdbd;">
+			</ion-thumbnail>
+			<h2 style="background-color: #e0e0e0; display: inline-block; height: 1.9rem; width: 65%;"></h2>
+			<div>
+				<span ion-text color="success">
+					<span style="background-color: #c8e6c9; display: inline-block; height: 1.7rem; width: 25%;"></span>
+				</span>
+			</div>
+			<p style="background-color: #e0e0e0; display: inline-block; height: 1.6rem; width: 95%;"></p>
+		</ion-item>
+		<ion-item class="pointer" *ngFor="let number of [0]">
+			<ion-thumbnail item-start>
+				<img class="img-responsive store-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="background-color: #bdbdbd;">
+			</ion-thumbnail>
+			<h2 style="background-color: #e0e0e0; display: inline-block; height: 1.9rem; width: 65%;"></h2>
+
+		</ion-item>
+	</ion-list>
+
+</ion-content>

@@ -1,0 +1,28 @@
+<ion-header>
+	<ion-navbar color="secondary">
+		<ion-title>Επιτυχής Παραγγελία</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-row>
+		<ion-col text-center>
+			<h3 text-capitalize>Ευχαριστούμε</h3>
+			<hr>
+			<div class="flex">
+				<img class="store-logo" *ngIf="store" src="{{store.logo|imageStore}}" class="img-responsive store-logo">
+				<ion-icon name="checkmark-circle"></ion-icon>
+			</div>
+			<hr>
+			<p class="text1">Η παραγγελία ετοιμάζεται και σύντομα θα είναι στην πόρτα σου.</p>
+			<p class="text2">Καλή σου όρεξη!!</p>
+		</ion-col>
+	</ion-row>
+</ion-content>
+
+<ion-footer text-center>
+	<button class="button-80" color="cyan" center ion-button (click)="handleNavigateToStoresPage()">
+		<ion-icon name="arrow-back"></ion-icon>
+		<span>Επιστροφή στα καταστήματα</span>
+	</button>
+</ion-footer>

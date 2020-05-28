@@ -1,0 +1,141 @@
+<ion-header>
+	<ion-navbar color="secondary">
+		<button ion-button menuToggle start>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>
+			Καλάθι
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content>
+
+	<ion-list class="accordion-list">
+		<ion-list-header no-lines no-padding *ngIf="cart">
+			<button ion-item class="color-secondary" (click)="toggleSectionCartDetails(showCartDetails)" detail-none [ngClass]="{'section-active': showCartDetails, 'section': !showCartDetails}">
+				<ion-icon item-left name="arrow-forward" *ngIf="!showCartDetails"></ion-icon>
+				<ion-icon item-left name="arrow-down" *ngIf="showCartDetails"></ion-icon>
+				Καλάθι Παραγγελίας ({{getAmountOfCartProducts(cart)}}) <ion-icon name="cart"></ion-icon>
+			</button>
+			<ion-list *ngIf="showCartDetails">
+				<ng-container *ngFor="let cartItemOffer of cart.cartItemOffers">
+					<ion-item detail-none class="child-item cartItemOffer" text-wrap *ngFor="let cartItemOffersProduct of cartItemOffer.products">
+						<h3 item-start><strong>{{cartItemOffer.quantity}}</strong>x</h3>
+						<h3 text-capitalize>{{cartItemOffersProduct.name}}</h3>
+						<h3 item-end>{{(cartItemOffersProduct.totalPrice * cartItemOffer.quantity)|priceFormat}}</h3>
+						<!-- <button ion-button outline item-end color="grey" (click)="removeCartItemOffer(cartItemOffersProduct)">
+							<ion-icon name="trash"></ion-icon>
+						</button> -->
+					</ion-item>
+					<ion-item detail-none class="child-item cartItemOffer-total" text-wrap>
+						<h3 item-start><strong>{{cartItemOffer.quantity}}</strong>x</h3>
+						<h3 text-capitalize>{{cartItemOffer.name}}</h3>
+						<h3 item-end>{{-(cartItemOffer.discount * cartItemOffer.quantity)|priceFormat}}</h3>
+						<button ion-button outline item-end color="grey" (click)="removeCartItemOffer(cartItemOffer)">
+							<ion-icon name="trash"></ion-icon>
+						</button>
+					</ion-item>
+				</ng-container>
+				<ion-item *ngFor="let cartItem of cart.cartItems" detail-none class="child-item cartItem" text-wrap>
+					<h3 item-start><strong>{{cartItem.quantity}}</strong>x</h3>
+					<h3 text-capitalize>{{cartItem.name}}</h3>
+					<h3 item-end>{{cartItem.totalPrice|priceFormat}}</h3>
+					<button ion-button outline item-end color="grey" (click)="removeCartItem(cartItem)">
+						<ion-icon name="trash"></ion-icon>
+					</button>
+				</ion-item>
+			</ion-list>
+		</ion-list-header>
+	</ion-list>
+
+	<ion-list *ngIf="orderDetails">
+		<ion-item margin-bottom>
+			<ion-label class="required" floating>
+				<ion-icon name="person"></ion-icon>
+				<span>Επώνυμο</span>
+			</ion-label>
+			<ion-input type="text" [(ngModel)]="orderDetails.customerSurname"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required" floating>
+				<ion-icon name="person"></ion-icon>
+				<span>Όνομα</span>
+			</ion-label>
+			<ion-input type="text" [(ngModel)]="orderDetails.customerForename"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required" floating>
+				<ion-icon name="home"></ion-icon>
+				<span>Διεύθυνση & αριθμός</span>
+			</ion-label>
+			<ion-input type="text" [(ngModel)]="orderDetails.customerAddressLine"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required" floating>
+				<ion-icon name="call"></ion-icon>
+				<span>Τηλέφωνο</span>
+			</ion-label>
+			<ion-input type="tel" [(ngModel)]="orderDetails.customerPhoneNumber"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required" floating>
+				<ion-icon name="call"></ion-icon>
+				<span>Επιβεβαίωση τηλεφώνου</span>
+			</ion-label>
+			<ion-input type="tel" [(ngModel)]="orderDetails.customerPhoneNumberConfirm"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required" *ngIf="!deliveryType">
+				<ion-icon name="list-box"></ion-icon> Τρόπος παραγγελίας
+			</ion-label>
+			<ion-select [(ngModel)]="deliveryType" okText="ΟΚ" cancelText="ΑΚΥΡΟ" [ngClass]="{'selected-deliveryType' : deliveryType}">
+				<ion-option value="1">Διανομή στην διεύθυνση</ion-option>
+				<ion-option value="2">Παραλαβή από το κατάστημα</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label floating>
+				<ion-icon name="notifications"></ion-icon>
+				<span>Όνομα στο κουδούνι</span>
+			</ion-label>
+			<ion-input [(ngModel)]="orderDetails.customerDoorName"></ion-input>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label class="required">
+				<ion-icon name="list-box"></ion-icon> Όροφος
+			</ion-label>
+			<ion-select [(ngModel)]="orderDetails.customerFloorNumber" okText="ΟΚ" cancelText="ΑΚΥΡΟ">
+				<ion-option value="0">Ισόγειο</ion-option>
+				<ion-option value="0.5">Ημιόροφος</ion-option>
+				<ion-option value="1">1ος όροφος</ion-option>
+				<ion-option value="2">2ος όροφος</ion-option>
+				<ion-option value="3">3ος όροφος</ion-option>
+				<ion-option value="4">4ος όροφος</ion-option>
+				<ion-option value="5">5ος όροφος</ion-option>
+				<ion-option value="6">6ος όροφος</ion-option>
+				<ion-option value="7">7ος όροφος</ion-option>
+				<ion-option value="8">8ος όροφος</ion-option>
+				<ion-option value="9">9ος όροφος</ion-option>
+				<ion-option value="10">Μονοκατοικία</ion-option>
+				<ion-option value="11">Κατάστημα</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-item margin-bottom>
+			<ion-label floating>
+				<ion-icon name="information-circle"></ion-icon>
+				<span>Παρατηρήσεις παραγγελίας</span>
+			</ion-label>
+			<ion-textarea [(ngModel)]="orderDetails.info"></ion-textarea>
+		</ion-item>
+	</ion-list>
+
+</ion-content>
+
+<ion-footer>
+	<ion-navbar>
+		<button center text-capitalize ion-button block [disabled]="!canSendOrder" (click)="sendOrder()">
+			Αποστολή Παραγγελίας ({{totalCartPrice|priceFormat}})
+		</button>
+	</ion-navbar>
+</ion-footer>

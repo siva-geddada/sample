@@ -1,0 +1,233 @@
+<ion-header>
+	<div class="store-cover" [ngStyle]="getBackgroundStyle(store.cover|imageStore)">
+		<ion-navbar transparent>
+			<h3 ion-text text-center color="light">{{store.name}}</h3>
+		</ion-navbar>
+		<div *ngIf="store">
+			<ion-row>
+				<ion-col col-4>
+					<ion-thumbnail item-start>
+						<img src="{{store.logo|imageStore}}" class="img-responsive store-logo">
+					</ion-thumbnail>
+				</ion-col>
+				<ion-col col-8>
+					<p ion-text color="light">
+						<ion-icon name="cash" color="success"></ion-icon>
+						<span style="letter-spacing: -0.2px;">Ελάχιστη παραγγελία:</span>
+						<strong>{{store.minOrderCost|priceFormat}}</strong>
+					</p>
+					<p ion-text color="light">
+						<ion-icon name="clock" color="success"></ion-icon>
+						<span style="letter-spacing: -0.2px;">Ανοιχτό σήμερα:</span>
+						<strong *ngIf="store.OpenHours" style="letter-spacing: -0.2px;">
+							<span>{{store.getTodayOpenHour().startTime|date:'HH:mm'}}</span> -
+							<span>{{store.getTodayOpenHour().endTime|date:'HH:mm'}}</span>
+						</strong>
+					</p>
+				</ion-col>
+			</ion-row>
+		</div>
+	</div>
+
+	<div>
+		<ion-segment [(ngModel)]="storeSegment">
+			<ion-segment-button value="catalog" text-capitalize>Κατάλογος</ion-segment-button>
+			<ion-segment-button value="contact" text-capitalize>Τηλέφωνα</ion-segment-button>
+			<ion-segment-button value="info" text-capitalize>Πληροφορίες</ion-segment-button>
+		</ion-segment>
+	</div>
+
+</ion-header>
+
+<ion-content class="background-pattern" style="margin-top: 10px;">
+
+	<div *ngIf="store">
+		<div [ngSwitch]="storeSegment">
+
+			<ion-list *ngSwitchCase="'catalog'" class="accordion-list">
+				
+				<ion-list-header *ngIf="liveDeals && liveDeals.length > 0" class="accordion-list" no-lines no-padding>
+					<button ion-item detail-none class="section-active">
+						<ion-icon item-left name="flame"></ion-icon>
+						Ζωντανές προσφορές
+					</button>
+					<ion-list class="liveDeals-list">
+						<ion-item *ngFor="let liveDeal of liveDeals" detail-none class="child-item pointer" text-wrap (click)="openOfferModal(liveDeal)">
+							<div class="details">
+								<div class="flex-1">
+									<h3 class="name">
+										{{liveDeal.name}}
+									</h3>
+									<p *ngIf="liveDeal.shortDescription" class="description">
+										{{ liveDeal.shortDescription.length < 73 ? liveDeal.shortDescription : (liveDeal.shortDescription | slice:0:73) + '...' }}
+									</p>
+								</div>
+								<div style="min-width: 75px; text-align: right;">
+									<div color="dark" class="display-block" style="min-height: 22px; font-size: 1.3em; color: #b71c1c; font-weight: 500;">
+										<span style="font-size: 0.8em;">{{(liveDeal.finalPrice/liveDeal.totalPrice*100 - 100).toFixed(0)}}</span><span
+										 style="font-size: 0.9em;">%</span>
+									</div>
+									<div color="dark" class="display-block" style="min-height: 22px;">
+										<span style="font-size: 0.8em; color: #666">από</span>
+										<span class="cross-out" style="font-size: 0.85em;">{{liveDeal.totalPrice|priceFormat}}</span>
+									</div>
+									<div small class="display-block" style="min-height: 22px;">
+										<span style="font-size: 0.8em; color: #666">μόνο</span>
+										<span style="font-size: 1em; color: #43a047; font-weight: 600;">{{liveDeal.finalPrice|priceFormat}}</span>
+									</div>
+								</div>
+							</div>
+							<div class="remains">
+								<div class="countdown-timer">
+									<span class="countdown-timer-label">Απομένουν: </span>
+									<span class="countdown-timer-value">{{liveDeal.getCurrentOfferScheduler().endDateTime|countdown}}</span>
+								</div>
+								<div class="amount">
+									<span class="amount-label">Τεμάχια: </span>
+									<span class="amount-value">{{liveDeal.getCurrentOfferScheduler().usedAmountVirtual}}</span>
+								</div>
+							</div>
+
+						</ion-item>
+					</ion-list>
+				</ion-list-header>
+
+				<ion-list-header *ngIf="deals && deals.length > 0" class="accordion-list" no-lines no-padding>
+					<button ion-item (click)="toggleSectionDeal()" detail-none [ngClass]="{'section-active': categoryDeal.open, 'section': !categoryDeal.open}">
+						<ion-icon item-left name="arrow-forward" *ngIf="!categoryDeal.open"></ion-icon>
+						<ion-icon item-left name="arrow-down" *ngIf="categoryDeal.open"></ion-icon>
+						Προσφορές
+					</button>
+					<ion-list class="deals-list" *ngIf="categoryDeal.open">
+						<ion-item *ngFor="let deal of deals" detail-none class="child-item pointer" text-wrap (click)="openOfferModal(deal)">
+							<div class="details">
+								<div class="flex-1">
+									<h3 class="name">
+										{{deal.name}}
+									</h3>
+									<p class="description" *ngIf="deal.shortDescription">
+										{{ deal.shortDescription.length < 73 ? deal.shortDescription : (deal.shortDescription | slice:0:73) + '...' }}
+									</p>
+								</div>
+								<div style="min-width: 75px; text-align: right;">
+									<div color="dark" class="display-block" style="min-height: 22px;">
+										<span style="font-size: 0.8em; color: #666">από</span>
+										<span class="cross-out" style="font-size: 0.85em;">{{deal.totalPrice|priceFormat}}</span>
+									</div>
+									<div small class="display-block" style="min-height: 22px;">
+										<span style="font-size: 0.8em; color: #666">μόνο</span>
+										<span style="font-size: 1.05em; color: #43a047; font-weight: 600;">{{deal.finalPrice|priceFormat}}</span>
+									</div>
+								</div>
+							</div>
+						</ion-item>
+					</ion-list>
+				</ion-list-header>
+
+				<ion-list-header *ngFor="let category of categories; let i = index" no-lines no-padding>
+					<button ion-item (click)="toggleSection(i)" detail-none [ngClass]="{'section-active': category.open, 'section': !category.open}">
+						<ion-icon item-left name="arrow-forward" *ngIf="!category.open"></ion-icon>
+						<ion-icon item-left name="arrow-down" *ngIf="category.open"></ion-icon>
+						{{category.key}}
+					</button>
+					<ion-list class="product-list" *ngIf="category.open">
+						<ion-item *ngFor="let product of category.product; let k = index" detail-none class="child-item pointer" text-wrap
+						 (click)="openModal(product)">
+							<div class="details">
+								<div class="flex-1">
+									<h3 class="name">
+										{{product.name}}
+									</h3>
+									<p class="description" *ngIf="product.shortDescription">
+										{{ product.shortDescription.length < 73 ? product.shortDescription : (product.shortDescription | slice:0:73) + '...' }}
+									</p>
+								</div>
+								<div style="min-width: 75px; text-align: right;">
+									<button ion-button outline item-end>{{ product.getDefaultPrice()|priceFormat }}</button>
+								</div>
+							</div>
+						</ion-item>
+					</ion-list>
+				</ion-list-header>
+
+				<ng-container *ngIf="!categories">
+					<ng-container *ngFor="let number of [0,1,2,3]" >
+						<ion-list-header class="accordion-list" no-lines no-padding>
+							<button ion-item detail-none class="section">
+								<ion-icon item-left name="arrow-forward"></ion-icon>
+								<span class="mock bg-pink inline-block border-radius" style="height: 1.7rem; width: 35%; max-width: 100px;"></span >
+							</button>
+						</ion-list-header>
+						<ion-list-header class="accordion-list" no-lines no-padding>
+							<button ion-item detail-none class="section">
+								<ion-icon item-left name="arrow-forward"></ion-icon>
+								<span class="mock bg-pink inline-block border-radius" style="height: 1.4rem; width: 30%; max-width: 90px;"></span>
+							</button>
+						</ion-list-header>
+						<ion-list-header class="accordion-list" no-lines no-padding>
+							<button ion-item detail-none class="section">
+								<ion-icon item-left name="arrow-forward"></ion-icon>
+								<span class="mock bg-pink inline-block border-radius" style="height: 1.1rem; width: 32%; max-width: 120px;"></span>
+							</button>
+						</ion-list-header>
+					</ng-container>
+				</ng-container>
+
+			</ion-list>
+
+			<ion-list *ngSwitchCase="'contact'">
+				<ion-item *ngFor="let contact of store.Contacts">
+					<ion-row>
+						<ion-col col-4>
+							<ion-avatar item-start>
+								<img src="{{contact.contactTypePicture|imageContactType}}" class="img-responsive" style="width: 32px; height: 32px">
+							</ion-avatar>
+						</ion-col>
+						<ion-col col-8>
+							<a href="tel:{{contact.value}}" ion-button block color="secondary">{{contact.value}}</a>
+						</ion-col>
+					</ion-row>
+				</ion-item>
+			</ion-list>
+
+			<ion-list *ngSwitchCase="'info'" style="margin-bottom: 30px;">
+
+				<h3 ion-text text-center>Ωράριο</h3>
+				<ion-item *ngFor="let openHour of store.OpenHours">
+					<ion-row>
+						<ion-col>
+							<span>{{openHour.dayOfWeek|dayNameFormat}}</span>
+						</ion-col>
+						<ion-col>
+							<ion-icon name="clock" color="secondary"></ion-icon>
+							<span>{{openHour.startTime|date:'HH:mm'}}</span> -
+							<span>{{openHour.endTime|date:'HH:mm'}}</span>
+						</ion-col>
+					</ion-row>
+				</ion-item>
+
+				<h3 ion-text text-center>Διεύθυνση</h3>
+				<ion-item *ngFor="let address of store.Addresses">
+					<ion-row>
+						<ion-col>
+							<ion-icon name="compass" color="secondary"></ion-icon>
+							<span>{{address.line}}</span>
+						</ion-col>
+						<ion-col>
+							<span>{{address.city}}, ΤΚ {{address.zip}}</span>
+						</ion-col>
+					</ion-row>
+				</ion-item>
+
+			</ion-list>
+
+		</div>
+	</div>
+	<ion-fab *ngIf="cart && ((cart.cartItems && cart.cartItems.length > 0) || (cart.cartItemOffers && cart.cartItemOffers.length > 0))"
+	 bottom right>
+		<button ion-fab large color="primary" (click)="navigateToCheckoutPage()">
+			{{getAmountOfCartProducts(cart)}}
+			<ion-icon name="cart"></ion-icon>
+		</button>
+	</ion-fab>
+</ion-content>

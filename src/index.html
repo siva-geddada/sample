@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+
+	<meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+
+	<title>Food-Order</title>
+	<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+
+	<!-- <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico"> -->
+	<link rel="icon" sizes="192x192" href="assets/icon/icon-192x192.png">
+
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#0d0d0d">
+
+	<!-- add to homescreen for ios -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="mobile-web-app-capable" content="yes">
+
+	<link rel="apple-touch-icon" href="assets/icon/icon-128x128.png">
+	<link rel="apple-touch-icon-precomposed" href="assets/icon/icon-128x128.png">
+	<link rel="shortcut icon" href="assets/icon/icon-128x128.png">
+
+
+	<!-- cordova.js required for cordova apps (remove if not needed) -->
+	<!-- 
+		<script src="cordova.js"></script>
+	-->
+
+
+
+	<!-- un-comment this code to enable service worker-->
+	<script>
+
+		function promptUserToRefresh(reg) {
+			// this is just an example
+			// don't use window.confirm in real life; it's terrible
+			if (window.confirm("New version available! OK to refresh?")) {
+				reg.waiting.postMessage('skipWaiting');
+			}
+		}
+
+		function listenForWaitingServiceWorker(reg, callback) {
+			function awaitStateChange() {
+				reg.installing.addEventListener('statechange', function () {
+					if (this.state === 'installed') callback(reg);
+				});
+			}
+			if (!reg) return;
+			if (reg.waiting) return callback(reg);
+			if (reg.installing) awaitStateChange();
+			reg.addEventListener('updatefound', awaitStateChange);
+		}
+
+		if ('serviceWorker' in navigator) {
+			if (navigator.serviceWorker.controller)
+				console.log('[PWA Builder] active service worker found, no need to register')
+			else 
+				console.log('[PWA Builder] service worker installed');
+
+			navigator.serviceWorker.register('service-worker.js')
+				.then(reg => {
+					listenForWaitingServiceWorker(reg, promptUserToRefresh);
+				})
+				.catch(err => console.error('[PWA Builder]  Error: ', err));
+
+			let refreshing;
+			navigator.serviceWorker.addEventListener('controllerchange', function () {
+				if (refreshing) return;
+				refreshing = true;
+				window.location.reload();
+			});
+		}
+	</script>
+
+	<link href="build/main.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<noscript>
+		<h1>You don’t have javascript enabled.</h1>
+		<p>Please enable it to get the full experience.</p>
+	</noscript>
+
+	<!-- Ionic's root component and where the app will load -->
+	<ion-app></ion-app>
+
+	<!-- The polyfills js is generated during the build process -->
+	<script src="build/polyfills.js"></script>
+
+	<!-- The vendor js is generated during the build process
+			 It contains all of the dependencies in node_modules -->
+	<script src="build/vendor.js"></script>
+
+	<!-- The main bundle js is generated during the build process -->
+	<script src="build/main.js"></script>
+
+</body>
+
+</html>

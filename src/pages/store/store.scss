@@ -1,0 +1,202 @@
+page-store {
+    ion-header ion-icon.back-button-icon.icon {
+        color: color($colors, light, base);
+    }
+    .store-cover {
+        height: 160px;
+        background-position: center;
+        background-size: cover;
+        padding-top: 5px;
+        .store-logo {
+            width: 64px;
+            height: 64px;
+            box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffffff;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    .pointer {
+        cursor: pointer;
+    }
+    .background-pattern {
+        background: linear-gradient(rgba(244,244,244, 0.11), rgba(244,244,244, 0.11)), url('../assets/imgs/sayagata2.png');
+        
+        ion-item {
+            background-color: inherit;
+        }
+        ion-list-header, ion-list {
+            background-color: inherit;
+        }
+    }
+    .cross-out {
+        text-decoration: line-through;
+    }
+    .display-block {
+        display: block;
+    }
+    .segment-button {
+        background-color: color($colors, light, base) !important;
+        color: black !important;
+        font-weight: bold !important;
+    }
+    .segment-activated {
+        background-color: color($colors, secondary-light, base) !important;
+        color: black !important;
+        font-weight: bold !important;
+    }
+    .accordion-list {
+        // background: color($colors, light);
+        height: 100%;
+    }
+    .list-header-md {
+        margin-bottom: 5px;
+    }
+    .section {
+        background: #eeeeee ;
+        color: black;
+        margin-bottom: 4px;
+        color: #bf360c;
+        font-weight: 600;
+        border-radius: 2px;
+    }
+    .section-active {
+        background: color($colors, primary-light, base);
+        color: white;
+    }
+    .child {
+        // background: #e8e7e6;
+        color: black;
+        margin-bottom: 4px;
+    }
+    .child-item {
+        // background: #f3f2f1;
+        padding: 10px;
+    }
+    .label {
+        margin: 0px;
+    }
+    .list {
+        margin-bottom: 0;
+    }
+    .list-header-ios {
+        letter-spacing: 0.05rem;
+        text-transform: none;
+    }
+    .liveDeals-list {
+
+        &.list-md {
+            .details {
+                .name {
+                    font-size: 1.1em;
+                } 
+            }
+        }
+
+        .details {
+            display: flex; 
+            margin-bottom: 4px;
+
+            .flex-1 {
+                flex: 1;
+            }
+            .name {
+                font-weight: 600;
+                color: #313131;
+            }
+
+            .description {
+                // border: 1px solid #e0e0e0;
+                border-radius: 2px;
+                padding: 3px;
+                font-size: 1.3rem
+            }
+        }
+        .remains {
+            display: flex;
+
+            .countdown-timer {
+                flex: 1;
+            }
+            .amount { }
+            .countdown-timer-label, .amount-label {
+                color: #666; 
+                font-size: 0.85em;
+            }
+            .countdown-timer-value, .amount-value {
+                font-size: 0.9em;
+                font-weight: 500;
+            }
+        }
+
+    }
+
+    .deals-list {
+
+        &.list-md {
+            .details {
+                .name {
+                    font-size: 1.1em;
+                } 
+            }
+        }
+
+        .details {
+            display: flex; 
+            margin-bottom: 4px;
+
+            .flex-1 {
+                flex: 1;
+            }
+            .name {
+                font-weight: 600;
+                color: #313131;
+            }
+
+            .description {
+                // border: 1px solid #e0e0e0;
+                border-radius: 2px;
+                padding: 3px;
+                font-size: 1.3rem;
+            }
+        }
+
+    }
+
+    .product-list {
+        .details {
+            display: flex; 
+            margin-bottom: 4px;
+
+            .flex-1 {
+                flex: 1;
+            }
+            .name {
+                font-weight: 600;
+                color: #313131;
+            }
+
+            .description {
+                // border: 1px solid #e0e0e0;
+                border-radius: 2px;
+                padding: 3px;
+                font-size: 1.3rem
+            }
+        }
+    }
+
+}
+
+.mock {
+    &.bg-pink {
+        background-color: #ffab91;
+    }
+    &.inline-block {
+        display: inline-block;
+    }
+    &.border-radius {
+        border-radius: 1px;
+    }
+}
+
